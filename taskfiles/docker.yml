@@ -1,0 +1,11 @@
+version: '3'
+
+tasks:
+  run-*:
+    cmds:
+      - docker stop {{.NAME}} > /dev/null 2>&1 || exit 0
+      - docker rm {{.NAME}} > /dev/null 2>&1 || exit 0
+      - defer: docker stop {{.NAME}} > /dev/null 2>&1 || exit 0
+      - docker run --init --name {{.NAME}} --rm {{.CLI_ARGS}} || exit 0
+    vars:
+      NAME: '{{index .MATCH 0}}'

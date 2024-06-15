@@ -1,0 +1,33 @@
+package: muxc
+out: ./server/muxc
+
+imports:
+  - "github.com/enolgor/golang-webservice-template/application"
+  - "github.com/enolgor/golang-webservice-template/server/handlers"
+  - "github.com/enolgor/golang-webservice-template/server/handlers/components"
+  - "github.com/enolgor/golang-webservice-template/server/interceptors"
+  - "github.com/enolgor/golang-webservice-template/server/middlewares"
+  - "github.com/enolgor/golang-webservice-template/models"
+
+args:
+  app: "*application.App"
+
+vars:
+  logger: middlewares.Logger(app)
+  interceptor: middlewares.Intercept(app, interceptors.ErrorInterceptor(app))
+  admin: middlewares.Authenticated(app, models.ADMIN)
+  template: middlewares.StaticTemplate(app)
+
+routes:
+  - use:
+      - logger
+      - interceptor
+    paths:
+      - GET /login                ;handlers.Login(app)
+      - GET /auth0/callback       ;handlers.Auth0Callback(app)
+      - GET /logout               ;handlers.Logout(app)
+      - GET /js/timezones.js      ;handlers.TimeZonesJS(app)
+      - GET /components/profile   ;components.Profile(app)
+      - GET /components/nav       ;components.Nav(app)
+      - GET /admin/               ;handlers.Static(app);        admin, template
+      - GET /                     ;handlers.Static(app);        template

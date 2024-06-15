@@ -1,0 +1,15 @@
+version: '3'
+
+tasks:
+  download-deps:
+    silent: true
+    cmds:
+      - mkdir -p src/server/frontend/static/js/lib
+      - curl -sL -o src/server/frontend/static/js/lib/htmx.min.js https://unpkg.com/htmx.org@{{.htmx_version}}/dist/htmx.min.js
+      - curl -sL -o src/server/frontend/static/js/lib/alpine.min.js https://cdn.jsdelivr.net/npm/alpinejs@{{.alpine_js_version}}/dist/cdn.min.js
+  css:
+    cmds:
+      - task docker:run-tailwind -- -t -v $(pwd)/src/server/frontend:/src -w /src $(docker build --build-arg version={{.tailwind_version}} -q -f docker/tailwind.Dockerfile .) -c ./css/tailwind.config.js -i ./css/input.css -o ./static/css/lib/tailwind.css --minify
+  css-watch:
+    cmds:
+      - task docker:run-tailwind -- -t -v $(pwd)/src/server/frontend:/src -w /src $(docker build --build-arg version={{.tailwind_version}} -q -f docker/tailwind.Dockerfile .) -c ./css/tailwind.config.js -i ./css/input.css -o ./static/css/lib/tailwind.css --watch

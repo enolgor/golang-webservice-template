@@ -1,0 +1,8 @@
+{{ define "content" }}
+<div id="nav">
+  <div hx-get="/components/nav" hx-trigger="load" hx-target="#nav" hx-swap="outerHTML"></div>
+</div>
+<h3 class="text-center m-auto my-10 text-white text-6xl">
+  You have the admin role!
+</h3>
+{{ end }}

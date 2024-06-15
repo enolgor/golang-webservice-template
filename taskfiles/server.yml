@@ -1,0 +1,16 @@
+version: '3'
+
+tasks:
+  muxc:
+    cmds:
+      - task docker:run-muxc -- -t -v $(pwd)/src:/src -w /src enolgor/muxc:latest
+  muxc-watch:
+    cmds:
+      - task docker:run-muxc -- -t -v $(pwd)/src:/src -w /src enolgor/muxc:latest -w
+  dev:
+    cmds:
+      - docker build -t {{.docker_image_name}}:dev -f docker/dev.Dockerfile .
+      - task docker:run-server -- -p 8080:8080 -p 2345:2345 -v $(pwd)/src:/app -v $(pwd)/.env.development:/app/.env -t {{.docker_image_name}}:dev
+  dist:
+    cmds:
+      - docker build -t {{.docker_image_name}}:{{.docker_image_tag}} -f docker/prod.Dockerfile .

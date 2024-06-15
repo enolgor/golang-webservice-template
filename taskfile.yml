@@ -1,0 +1,52 @@
+version: '3'
+
+vars:
+  ssm_prefix: '/golang-webservice-template'
+  docker_image_name: golang-webservice-template
+  docker_image_tag: latest
+  tailwind_version: 3.4.4
+  htmx_version: 1.9.12
+  alpine_js_version: 3.14.0
+
+includes:
+  env:
+    taskfile: ./taskfiles/env.yml
+    internal: true
+  frontend:
+    taskfile: ./taskfiles/frontend.yml
+    internal: true
+  server:
+    taskfile: ./taskfiles/server.yml
+    internal: true
+  docker: ./taskfiles/docker.yml
+    
+tasks:
+  setup:
+    cmds:
+      - task: env:setup
+      - task: frontend:download-deps
+  cleanup:
+    cmds:
+      - task: env:cleanup-env-production
+      - task: env:cleanup-env-development
+  pull-env:
+    cmds:
+      - task: env:pull-ssm-env-production
+      - task: env:pull-ssm-env-development
+  push-env:
+    cmds:
+      - task: env:push-ssm-env-production
+      - task: env:push-ssm-env-development
+  dev:
+    deps:
+      - frontend:css-watch
+      - server:muxc-watch
+      - server:dev
+    parallel: true
+    interactive: true
+  dist:
+    deps:
+      - frontend:css
+      - server:muxc
+    cmds:
+      - task: server:dist
