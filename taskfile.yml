@@ -4,6 +4,7 @@ vars:
   ssm_prefix: '/golang-webservice-template'
   docker_image_name: golang-webservice-template
   docker_image_tag: latest
+  go_version: 1.22.4
   tailwind_version: 3.4.4
   htmx_version: 1.9.12
   alpine_js_version: 3.14.0

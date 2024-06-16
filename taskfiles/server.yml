@@ -9,8 +9,8 @@ tasks:
       - task docker:run-muxc -- -t -v $(pwd)/src:/src -w /src enolgor/muxc:latest -w
   dev:
     cmds:
-      - docker build -t {{.docker_image_name}}:dev -f docker/dev.Dockerfile .
+      - docker build -t {{.docker_image_name}}:dev --build-arg GO_VERSION={{.go_version}} -f docker/dev.Dockerfile .
       - task docker:run-server -- -p 8080:8080 -p 2345:2345 -v $(pwd)/src:/app -v $(pwd)/.env.development:/app/.env -t {{.docker_image_name}}:dev
   dist:
     cmds:
-      - docker build -t {{.docker_image_name}}:{{.docker_image_tag}} -f docker/prod.Dockerfile .
+      - docker build -t {{.docker_image_name}}:{{.docker_image_tag}} --build-arg GO_VERSION={{.go_version}} -f docker/prod.Dockerfile .

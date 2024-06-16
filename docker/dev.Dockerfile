@@ -1,5 +1,5 @@
 FROM alpine:latest
-ENV GO_VERSION=1.22.4
+ARG GO_VERSION
 
 RUN apk update && apk upgrade && \
     apk add --no-cache curl tzdata
